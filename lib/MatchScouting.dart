@@ -1,43 +1,6 @@
 import 'package:english_words/english_words.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:scouting_frc/HomePage.dart';
-
-void main() {
-  runApp(MyApp());
-}
-
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
-
-  @override
-  Widget build(BuildContext context) { //window builder?
-    return ChangeNotifierProvider(
-      create: (context) => MyAppState(),
-      child: MaterialApp(
-        title: 'Scouting App',
-        theme: ThemeData(
-          useMaterial3: true,
-          colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple), 
-          scaffoldBackgroundColor: Colors.blueGrey
-        ),
-
-        home: HomePage(),
-      ),
-    );
-  }
-}
-
-class MyAppState extends ChangeNotifier { //main class with methods and variables
-  var current = WordPair.random();
-  void getNext() {
-    current = WordPair.random();
-    notifyListeners();
-  }
-}
-
-
-
 
 class _CounterState extends State<Counter> {
 
@@ -105,7 +68,7 @@ class _CounterState extends State<Counter> {
           Text('L3 Count: $_counterL3'),
           const SizedBox(width: 50),
           Text('L4 Count: $_counterL4'),
-      ],
+        ],
       ),
     );
   }
