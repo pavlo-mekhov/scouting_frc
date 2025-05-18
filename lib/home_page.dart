@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:scouting_frc/DataManagement/Objects/team_info.dart';
+import 'package:scouting_frc/DataManagement/local_database.dart';
 import 'package:scouting_frc/main.dart';
+import 'package:scouting_frc/match_scouting_page.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
@@ -58,7 +61,8 @@ class HomePage extends StatelessWidget {
                 ),
                 padding: EdgeInsets.zero, // <--add this
               ),
-              child: Image.network('url...', fit: BoxFit.cover),
+                child: Text('data')
+              // Image.network('url...', fit: BoxFit.cover),
             ),
           ),
 
@@ -82,7 +86,8 @@ class HomePage extends StatelessWidget {
                 ),
                 padding: EdgeInsets.zero, // <--add this
               ),
-              child: Image.network('url...', fit: BoxFit.cover),
+                child: Text('data')
+              // Image.network('url...', fit: BoxFit.cover),
             ),
           ),
 
@@ -93,11 +98,9 @@ class HomePage extends StatelessWidget {
             ElevatedButton(
 
               onPressed: () {
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => Counter())
-                );
+                addTeamToDB();
               },
+              onLongPress: printTeams,
               clipBehavior: Clip.antiAlias,// <--add this
               style: ElevatedButton.styleFrom(
                 shape: RoundedRectangleBorder(
@@ -105,7 +108,8 @@ class HomePage extends StatelessWidget {
                 ),
                 padding: EdgeInsets.zero, // <--add this
               ),
-              child: Image.network('url...', fit: BoxFit.cover),
+              child: Text('data')
+              // Image.network('url...', fit: BoxFit.cover),
             ),
           ),
 
@@ -113,5 +117,14 @@ class HomePage extends StatelessWidget {
         ],
       ),
     );
+  }
+
+  void addTeamToDB() {
+    TeamInfo team = TeamInfo(teamNumber: 11, teamName: 'Rev00');
+    LocalDatabase.insertTeam(team);
+  }
+
+  void printTeams() {
+    LocalDatabase.getAllTeamsAsString().then((teamsString) => print(teamsString));
   }
 }

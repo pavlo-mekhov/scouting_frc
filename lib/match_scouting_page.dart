@@ -204,7 +204,6 @@ class _CounterState extends State<Counter> {
                               fontSize: 30,
                               fontWeight: FontWeight.bold)),),//TextStyle gives details like color + size ),
 
-
                   ])
               ,Column(
                   mainAxisAlignment: MainAxisAlignment.center,
