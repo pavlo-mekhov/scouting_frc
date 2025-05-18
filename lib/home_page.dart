@@ -1,122 +1,79 @@
 import 'package:flutter/material.dart';
 import 'package:scouting_frc/DataManagement/Objects/team_info.dart';
 import 'package:scouting_frc/DataManagement/local_database.dart';
-import 'package:scouting_frc/main.dart';
 import 'package:scouting_frc/match_scouting_page.dart';
+import 'package:scouting_frc/teams_page.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
 
   @override
   Widget build(BuildContext context) {
-
     return Scaffold(
       appBar: AppBar(
-          title: Text('6725'),
-          actions: <Widget>[
-
-            IconButton(
-              alignment: Alignment.centerLeft,
-              icon: const Icon(Icons.add_alert),
-              tooltip: 'Show Snackbar',
-              onPressed: () {
-                ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('This is a snackbar')));
-              },
-            ),
-          ]
-      ),
-
-
-      body: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          Spacer(),
-          SizedBox(
-            height: 80,
-            child: ElevatedButton(onPressed: () {
-              Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => Counter())
+        title: const Text('Team 6725 Scouting'),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.add_alert),
+            tooltip: 'Show Snackbar',
+            onPressed: () {
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(content: Text('This is a snackbar')),
               );
-            }, child:
-            Text('Match Scouting')
-            ),
-          ), // BUTTON 1
-
-          Spacer(),
-          SizedBox(
-            height: 80,
-            child:
-            ElevatedButton(
-              onPressed: () {
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => Counter())
-                );
-              },
-              clipBehavior: Clip.antiAlias,// <--add this
-              style: ElevatedButton.styleFrom(
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(18.0), // <--add this
-                ),
-                padding: EdgeInsets.zero, // <--add this
-              ),
-                child: Text('data')
-              // Image.network('url...', fit: BoxFit.cover),
-            ),
+            },
           ),
-
-          Spacer(),
-          SizedBox(
-            height: 80,
-            child:
-            ElevatedButton(
-              // child: const Text('Match Scouting'),
-              onPressed: () {
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => Counter())
-                  // MaterialPageRoute(builder: (context) => const CounterState()),
-                );
-              },
-              clipBehavior: Clip.antiAlias,// <--add this
-              style: ElevatedButton.styleFrom(
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(18.0), // <--add this
-                ),
-                padding: EdgeInsets.zero, // <--add this
-              ),
-                child: Text('data')
-              // Image.network('url...', fit: BoxFit.cover),
-            ),
-          ),
-
-          Spacer(),
-          SizedBox(
-            height: 80,
-            child:
-            ElevatedButton(
-
-              onPressed: () {
-                addTeamToDB();
-              },
-              onLongPress: printTeams,
-              clipBehavior: Clip.antiAlias,// <--add this
-              style: ElevatedButton.styleFrom(
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(18.0), // <--add this
-                ),
-                padding: EdgeInsets.zero, // <--add this
-              ),
-              child: Text('data')
-              // Image.network('url...', fit: BoxFit.cover),
-            ),
-          ),
-
-          Spacer(flex: 50)
         ],
       ),
+      body: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            const Spacer(),
+            _buildButton(
+              label: 'Match Scouting',
+              onPressed: () => _navigateTo(context, Counter()),
+            ),
+            const Spacer(),
+            _buildButton(
+              label: 'Team Data',
+              onPressed: () => _navigateTo(context, TeamsPage()),
+            ),
+            const Spacer(),
+            _buildButton(
+              label: 'Analytics',
+              onPressed: () => _navigateTo(context, Counter()),
+            ),
+            const Spacer(),
+            _buildButton(
+              label: 'Add Team',
+              onPressed: addTeamToDB,
+              onLongPress: printTeams,
+            ),
+            const Spacer(flex: 50),
+          ]
+        )
+      )
     );
+  }
+
+  Widget _buildButton({required String label, required VoidCallback onPressed, VoidCallback? onLongPress}) {
+    return SizedBox(
+      height: 80,
+      child: ElevatedButton(
+        onPressed: onPressed,
+        onLongPress: onLongPress,
+        style: ElevatedButton.styleFrom(
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(18)),
+          padding: EdgeInsets.zero,
+        ),
+        child: Text(label, style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+      ),
+    );
+  }
+
+  void _navigateTo(BuildContext context, Widget page) {
+    Navigator.push(context, MaterialPageRoute(builder: (context) => page));
   }
 
   void addTeamToDB() {
