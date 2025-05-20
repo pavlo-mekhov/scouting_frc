@@ -9,10 +9,8 @@ class _CounterState extends State<Counter> {
   int _counterRemoved = 0;
   int _counterBarge = 0;
   int _counterProcessor = 0;
-  bool _park = false;
-  bool _shallow = false;
-  bool _deep = false;
-  String _endgame = "none";
+
+  int _endgame = 0;//none = 0, park = 1, shallow = 2, deep = 3
 
   Color parkColor = Colors.black;
   Color shallowColor = Colors.black;
@@ -89,9 +87,7 @@ class _CounterState extends State<Counter> {
   }
   void _endgameClear() {
     setState(() {
-      _deep = false;
-      _shallow = false;
-      _park = false;
+      _endgame = 0;
       parkColor = Colors.black;
       shallowColor = Colors.black;
       deepColor = Colors.black;
@@ -99,9 +95,7 @@ class _CounterState extends State<Counter> {
   }
   void _endgameDeep() {
     setState(() {
-      _deep = true;
-      _shallow = false;
-      _park = false;
+      _endgame = 3;
       parkColor = Colors.black;
       shallowColor = Colors.black;
       deepColor = Colors.green;
@@ -109,9 +103,7 @@ class _CounterState extends State<Counter> {
   }
   void _endgameShallow() {
     setState(() {
-      _deep = true;
-      _shallow = true;
-      _park = false;
+      _endgame = 3;
       parkColor = Colors.black;
       shallowColor = Colors.green;
       deepColor = Colors.black;
@@ -119,9 +111,7 @@ class _CounterState extends State<Counter> {
   }
   void _endgamePark() {
     setState(() {
-      _deep = false;
-      _shallow = false;
-      _park = true;
+      _endgame = 1;
       parkColor = Colors.green;
       shallowColor = Colors.black;
       deepColor = Colors.black;
@@ -152,11 +142,11 @@ class _CounterState extends State<Counter> {
 
       appBar: AppBar(title: const Text('Match Scouting'),),
 
-      body: Center(
-        child: Column(
+      body: ListView(
+        children:[ Row(
 
-            mainAxisAlignment: MainAxisAlignment.start ,
-            crossAxisAlignment: CrossAxisAlignment.center ,
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.start,
 
             children: [
 
@@ -166,17 +156,17 @@ class _CounterState extends State<Counter> {
 
                   children: <Widget>[
                     Text('Coral',style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
-                    ElevatedButton(onLongPress: _deincrementL1, onPressed: _incrementL1, child: Text('L1 score: $_counterL1'),
+                    ElevatedButton(onLongPress: _deincrementL1, onPressed: _incrementL1, child: Text('L1: $_counterL1'),
                       style: ElevatedButton.styleFrom(
                           backgroundColor: Colors.black,
                           foregroundColor: Colors.amber,
                           padding: EdgeInsets.symmetric(horizontal: 32, vertical: 16),
                           textStyle: TextStyle(
                               fontSize: 30,
-                              fontWeight: FontWeight.bold)),),//TextStyle gives details like color + size
+                              fontWeight: FontWeight.bold)),),
+
                     const SizedBox(width: 50,),
-
-                    ElevatedButton(onLongPress: _deincrementL2, onPressed: _incrementL2, child: Text('L2 score: $_counterL2'),
+                    ElevatedButton(onLongPress: _deincrementL2, onPressed: _incrementL2, child: Text('L2: $_counterL2'),
                       style: ElevatedButton.styleFrom(
                           backgroundColor: Colors.black,
                           foregroundColor: Colors.amber,
@@ -184,8 +174,37 @@ class _CounterState extends State<Counter> {
                           textStyle: TextStyle(
                               fontSize: 30,
                               fontWeight: FontWeight.bold)),),//TextStyle gives details like color + size ),
+
                     const SizedBox(width: 50),
-                    ElevatedButton(onLongPress: _deincrementL3, onPressed: _incrementL3, child: Text('L3 score: $_counterL3'),
+                    ElevatedButton(onLongPress: _deincrementL3, onPressed: _incrementL3, child: Text('L3: $_counterL3'),
+                      style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.black,
+                          foregroundColor: Colors.amber,
+                          padding: EdgeInsets.symmetric(horizontal: 32, vertical: 16),
+                          textStyle: TextStyle(
+                              fontSize: 30,
+                              fontWeight: FontWeight.bold)),),//TextStyle gives details like color + size ),
+                    ElevatedButton(onLongPress: _deincrementL4, onPressed: _incrementL4, child: Text('L4: $_counterL4'),
+                      style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.black,
+                          foregroundColor: Colors.amber,
+                          padding: EdgeInsets.symmetric(horizontal: 32, vertical: 16),
+                          textStyle: TextStyle(
+                              fontSize: 30,
+                              fontWeight: FontWeight.bold)),),
+                    Text('Coral',style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
+
+                    ElevatedButton(onLongPress: _deincrementL1, onPressed: _incrementL1, child: Text('L1: $_counterL1'),
+                      style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.black,
+                          foregroundColor: Colors.amber,
+                          padding: EdgeInsets.symmetric(horizontal: 32, vertical: 16),
+                          textStyle: TextStyle(
+                              fontSize: 30,
+                              fontWeight: FontWeight.bold)),),
+
+                    const SizedBox(width: 50,),
+                    ElevatedButton(onLongPress: _deincrementL2, onPressed: _incrementL2, child: Text('L2: $_counterL2'),
                       style: ElevatedButton.styleFrom(
                           backgroundColor: Colors.black,
                           foregroundColor: Colors.amber,
@@ -194,8 +213,16 @@ class _CounterState extends State<Counter> {
                               fontSize: 30,
                               fontWeight: FontWeight.bold)),),//TextStyle gives details like color + size ),
 
-
-                    ElevatedButton(onLongPress: _deincrementL4, onPressed: _incrementL4, child: Text('L4 score: $_counterL4'),
+                    const SizedBox(width: 50),
+                    ElevatedButton(onLongPress: _deincrementL3, onPressed: _incrementL3, child: Text('L3: $_counterL3'),
+                      style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.black,
+                          foregroundColor: Colors.amber,
+                          padding: EdgeInsets.symmetric(horizontal: 32, vertical: 16),
+                          textStyle: TextStyle(
+                              fontSize: 30,
+                              fontWeight: FontWeight.bold)),),//TextStyle gives details like color + size ),
+                    ElevatedButton(onLongPress: _deincrementL4, onPressed: _incrementL4, child: Text('L4: $_counterL4'),
                       style: ElevatedButton.styleFrom(
                           backgroundColor: Colors.black,
                           foregroundColor: Colors.amber,
@@ -206,6 +233,7 @@ class _CounterState extends State<Counter> {
 
 
                   ])
+
               ,Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.center,
@@ -281,6 +309,7 @@ class _CounterState extends State<Counter> {
                                 textStyle: TextStyle(
                                     fontSize: 30,
                                     fontWeight: FontWeight.bold)),),
+
                           Align(
                             alignment: Alignment.bottomCenter,
                             child: ElevatedButton(onLongPress: _resetAll, onPressed: _none, child: const Text('Hold to Reset'),
@@ -296,8 +325,8 @@ class _CounterState extends State<Counter> {
 
                         ])
                   ])]),
-      ),
-    );       //TextStyle gives details like color + size ),Reset button
+      ],
+    ));       //TextStyle gives details like color + size ),Reset button
 
 
 

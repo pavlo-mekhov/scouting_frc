@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:scouting_frc/main.dart';
+import 'package:scouting_frc/match_scouting_page.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
