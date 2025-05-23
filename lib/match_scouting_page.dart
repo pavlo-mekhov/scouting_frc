@@ -1,347 +1,197 @@
 import 'package:flutter/material.dart';
+import 'auto_scouting.dart';
 
-class _CounterState extends State<Counter> {
-  Color selection = Colors.orange[400]!;
-  int _counterL1 = 0;
-  int _counterL2 = 0;
-  int _counterL3 = 0;
-  int _counterL4 = 0;
-  int _counterRemoved = 0;
-  int _counterBarge = 0;
-  int _counterProcessor = 0;
+class MatchScoutingPage extends StatefulWidget {
+  const MatchScoutingPage({super.key});
 
-  int _endgame = 0;//none = 0, park = 1, shallow = 2, deep = 3
+  @override
+  State<MatchScoutingPage> createState() => _MatchScoutingPageState();
+}
 
+enum EndgameState { none, park, shallow, deep }
+
+class _MatchScoutingPageState extends State<MatchScoutingPage> {
+  int teamNumber = 0;
+  int matchNumber = 0;
+
+  final Map<String, int> counters = {
+    "L1": 0, "L2": 0, "L3": 0, "L4": 0,
+    "Removed": 0, "Barge": 0, "Processor": 0
+  };
+
+  EndgameState _endgame = EndgameState.none;
   Color parkColor = Colors.black;
   Color shallowColor = Colors.black;
   Color deepColor = Colors.black;
-  void _incrementL1() {
-    setState(() {
-      _counterL1++;
-    });
-  }
-  void _deincrementL1() {
-    setState(() {
-      _counterL1--;
-    });
-  }
-  void _incrementL2() {
-    setState(() {
-      _counterL2++;
-    });
-  }
-  void _deincrementL2() {
-    setState(() {
-      _counterL2--;
-    });
-  }
-  void _incrementL3() {
-    setState(() {
-      _counterL3++;
-    });
-  }
-  void _deincrementL3() {
-    setState(() {
-      _counterL3--;
-    });
-  }void _incrementL4() {
-    setState(() {
-      _counterL4++;
-    });
-  }
-  void _deincrementL4() {
-    setState(() {
-      _counterL4--;
-    });
-  }
-  void _incrementRemoved() {
-    setState(() {
-      _counterRemoved++;
-    });
-  }
-  void _deincrementRemoved() {
-    setState(() {
-      _counterRemoved--;
-    });
-  }
-  void _incrementBarge() {
-    setState(() {
-      _counterBarge++;
-    });
-  }
-  void _deincrementBarge() {
-    setState(() {
-      _counterBarge--;
-    });
-  }
-  void _incrementProcessor() {
-    setState(() {
-      _counterProcessor++;
-    });
-  }
-  void _deincrementProcessor() {
-    setState(() {
-      _counterProcessor--;
 
-    });
-  }
-  void _endgameClear() {
+  void _updateCounter(String key, bool increment) {
     setState(() {
-      _endgame = 0;
-      parkColor = Colors.black;
-      shallowColor = Colors.black;
-      deepColor = Colors.black;
+      counters[key] = (counters[key]! + (increment ? 1 : -1)).clamp(0, double.infinity).toInt();
     });
   }
-  void _endgameDeep() {
+
+  void _setEndgame(EndgameState state) {
     setState(() {
-      _endgame = 3;
-      parkColor = Colors.black;
-      shallowColor = Colors.black;
-      deepColor = Colors.green;
+      _endgame = state;
+      parkColor = state == EndgameState.park ? Colors.green : Colors.black;
+      shallowColor = state == EndgameState.shallow ? Colors.green : Colors.black;
+      deepColor = state == EndgameState.deep ? Colors.green : Colors.black;
     });
   }
-  void _endgameShallow() {
-    setState(() {
-      _endgame = 3;
-      parkColor = Colors.black;
-      shallowColor = Colors.green;
-      deepColor = Colors.black;
-    });
-  }
-  void _endgamePark() {
-    setState(() {
-      _endgame = 1;
-      parkColor = Colors.green;
-      shallowColor = Colors.black;
-      deepColor = Colors.black;
-    });
-  }
+
   void _resetAll() {
     setState(() {
-      _counterL1 = 0;
-      _counterL2 = 0;
-      _counterL3 = 0;
-      _counterL4 = 0;
-      _counterRemoved = 0;
-      _counterBarge = 0;
-      _counterProcessor = 0;
-      parkColor = Colors.black;
-      shallowColor = Colors.black;
-      deepColor = Colors.black;
+      counters.forEach((key, _) => counters[key] = 0);
+      _endgame = EndgameState.none;
+      parkColor = shallowColor = deepColor = Colors.black;
     });
   }
-  void _none() {
-
-  }
-  // 4x coral counters
 
   @override
+
   Widget build(BuildContext context) {
+    double buttonHeight = MediaQuery.of(context).size.height * 0.07;
+    double fontSize = MediaQuery.of(context).size.width * 0.045;
+
     return Scaffold(
+      appBar: AppBar(title: const Text('Match Scouting')),
+      body: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 16),
+        child: Column(
+          children: [
+            _buildTextField("Team:" "$teamNumber", (value) {
+              setState(() { teamNumber = int.tryParse(value) ?? 0; });
+            }),
+            _buildTextField("Match:" "$matchNumber", (value) {
+              setState(() { matchNumber = int.tryParse(value) ?? 0; });
+            }),
+            const SizedBox(height: 20),
 
-      appBar: AppBar(title: const Text('Match Scouting'),),
+            // 🔹 Moved Auto button **below text fields** but **above the other buttons**
+            _buildNavigationButton("Auto", const AutoScoutingPage(), fontSize),
+            const SizedBox(height: 20),
 
-      body: ListView(
-        children:[ Row(
+            _buildCounterColumn("Coral", ["L1", "L2", "L3", "L4"]),
+            _buildCounterColumn("Algae", ["Removed", "Processor", "Barge"]),
+            const SizedBox(height: 20),
 
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.start,
+            _buildEndgameButtons(buttonHeight, fontSize),
+            const SizedBox(height: 20),
 
-            children: [
-
-              Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-
-                  children: <Widget>[
-                    Text('Coral',style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
-                    ElevatedButton(onLongPress: _deincrementL1, onPressed: _incrementL1, child: Text('L1: $_counterL1'),
-                      style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.black,
-                          foregroundColor: Colors.amber,
-                          padding: EdgeInsets.symmetric(horizontal: 32, vertical: 16),
-                          textStyle: TextStyle(
-                              fontSize: 30,
-                              fontWeight: FontWeight.bold)),),
-
-                    const SizedBox(width: 50,),
-                    ElevatedButton(onLongPress: _deincrementL2, onPressed: _incrementL2, child: Text('L2: $_counterL2'),
-                      style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.black,
-                          foregroundColor: Colors.amber,
-                          padding: EdgeInsets.symmetric(horizontal: 32, vertical: 16),
-                          textStyle: TextStyle(
-                              fontSize: 30,
-                              fontWeight: FontWeight.bold)),),//TextStyle gives details like color + size ),
-
-                    const SizedBox(width: 50),
-                    ElevatedButton(onLongPress: _deincrementL3, onPressed: _incrementL3, child: Text('L3: $_counterL3'),
-                      style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.black,
-                          foregroundColor: Colors.amber,
-                          padding: EdgeInsets.symmetric(horizontal: 32, vertical: 16),
-                          textStyle: TextStyle(
-                              fontSize: 30,
-                              fontWeight: FontWeight.bold)),),//TextStyle gives details like color + size ),
-                    ElevatedButton(onLongPress: _deincrementL4, onPressed: _incrementL4, child: Text('L4: $_counterL4'),
-                      style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.black,
-                          foregroundColor: Colors.amber,
-                          padding: EdgeInsets.symmetric(horizontal: 32, vertical: 16),
-                          textStyle: TextStyle(
-                              fontSize: 30,
-                              fontWeight: FontWeight.bold)),),
-                    Text('Coral',style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
-
-                    ElevatedButton(onLongPress: _deincrementL1, onPressed: _incrementL1, child: Text('L1: $_counterL1'),
-                      style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.black,
-                          foregroundColor: Colors.amber,
-                          padding: EdgeInsets.symmetric(horizontal: 32, vertical: 16),
-                          textStyle: TextStyle(
-                              fontSize: 30,
-                              fontWeight: FontWeight.bold)),),
-
-                    const SizedBox(width: 50,),
-                    ElevatedButton(onLongPress: _deincrementL2, onPressed: _incrementL2, child: Text('L2: $_counterL2'),
-                      style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.black,
-                          foregroundColor: Colors.amber,
-                          padding: EdgeInsets.symmetric(horizontal: 32, vertical: 16),
-                          textStyle: TextStyle(
-                              fontSize: 30,
-                              fontWeight: FontWeight.bold)),),//TextStyle gives details like color + size ),
-
-                    const SizedBox(width: 50),
-                    ElevatedButton(onLongPress: _deincrementL3, onPressed: _incrementL3, child: Text('L3: $_counterL3'),
-                      style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.black,
-                          foregroundColor: Colors.amber,
-                          padding: EdgeInsets.symmetric(horizontal: 32, vertical: 16),
-                          textStyle: TextStyle(
-                              fontSize: 30,
-                              fontWeight: FontWeight.bold)),),//TextStyle gives details like color + size ),
-                    ElevatedButton(onLongPress: _deincrementL4, onPressed: _incrementL4, child: Text('L4: $_counterL4'),
-                      style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.black,
-                          foregroundColor: Colors.amber,
-                          padding: EdgeInsets.symmetric(horizontal: 32, vertical: 16),
-                          textStyle: TextStyle(
-                              fontSize: 30,
-                              fontWeight: FontWeight.bold)),),//TextStyle gives details like color + size ),
-
-                  ])
-
-              ,Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: <Widget>[
-                    Text("Algae", style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
-                    ElevatedButton(onLongPress: _deincrementRemoved, onPressed: _incrementRemoved, child: Text('Removed: $_counterRemoved'),
-                      style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.black,
-                          foregroundColor: Colors.amber,
-                          padding: EdgeInsets.symmetric(horizontal: 32, vertical: 16),
-                          textStyle: TextStyle(
-                              fontSize: 30,
-                              fontWeight: FontWeight.bold)),),
-                    ElevatedButton(onLongPress: _deincrementProcessor, onPressed: _incrementProcessor, child: Text('Processor: $_counterProcessor'),
-                      style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.black,
-                          foregroundColor: Colors.amber,
-                          padding: EdgeInsets.symmetric(horizontal: 32, vertical: 16),
-                          textStyle: TextStyle(
-                              fontSize: 30,
-                              fontWeight: FontWeight.bold)),),//T//TextStyle gives details like color + size ),
-                    ElevatedButton(onLongPress: _deincrementBarge, onPressed: _incrementBarge, child: Text('Barge: $_counterBarge'),
-                      style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.black,
-                          foregroundColor: Colors.amber,
-                          padding: EdgeInsets.symmetric(horizontal: 32, vertical: 16),
-                          textStyle: TextStyle(
-                              fontSize: 30,
-                              fontWeight: FontWeight.bold)),),
-                    Column(//endgame
-                      // mainAxisAlignment: MainAxisAlignment.center,
-                      // crossAxisAlignment: CrossAxisAlignment.center,
-
-
-
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: <Widget>[
-                          Text("Endgame", style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
-                          ElevatedButton(onLongPress: _endgameClear,
-                            onPressed: _endgameShallow,
-                            child: Text('Shallow'),
-                            style: ElevatedButton.styleFrom(
-
-                                backgroundColor: shallowColor,
-                                foregroundColor: Colors.amber,
-                                padding: EdgeInsets.symmetric(
-                                    horizontal: 32, vertical: 16),
-                                textStyle: TextStyle(
-                                    fontSize: 30,
-                                    fontWeight: FontWeight.bold)),),
-                          ElevatedButton(onLongPress: _endgameClear,
-                            onPressed: _endgameDeep,
-                            child: Text('Deep'),
-                            style: ElevatedButton.styleFrom(
-
-                                backgroundColor: deepColor,
-                                foregroundColor: Colors.amber,
-                                padding: EdgeInsets.symmetric(
-                                    horizontal: 32, vertical: 16),
-                                textStyle: TextStyle(
-                                    fontSize: 30,
-                                    fontWeight: FontWeight.bold)),),
-                          ElevatedButton(onLongPress: _endgameClear,
-                            onPressed: _endgamePark,
-                            child: Text('Park'),
-                            style: ElevatedButton.styleFrom(
-
-                                backgroundColor: parkColor,
-                                foregroundColor: Colors.amber,
-                                padding: EdgeInsets.symmetric(
-                                    horizontal: 32, vertical: 16),
-                                textStyle: TextStyle(
-                                    fontSize: 30,
-                                    fontWeight: FontWeight.bold)),),
-
-                          Align(
-                            alignment: Alignment.bottomCenter,
-                            child: ElevatedButton(onLongPress: _resetAll, onPressed: _none, child: const Text('Hold to Reset'),
-                              style: ElevatedButton.styleFrom(
-
-                                  backgroundColor: Colors.amber,
-                                  foregroundColor: Colors.black,
-                                  padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                                  textStyle: TextStyle(
-                                      fontSize: 15,
-                                      fontWeight: FontWeight.bold)),),
-                          ),
-
-                        ])
-                  ])]),
-      ],
-    ));       //TextStyle gives details like color + size ),Reset button
-
-
-
+            Align(
+              alignment: Alignment.bottomCenter,
+              child: ElevatedButton(
+                onLongPress: _resetAll,
+                onPressed: () {},
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.amber,
+                  foregroundColor: Colors.black,
+                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+                  textStyle: TextStyle(fontSize: fontSize, fontWeight: FontWeight.bold),
+                ),
+                child: const Text('Hold to Reset'),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
   }
 
-}
+  Widget _buildTextField(String label, Function(String) onChanged) {
+    return Padding(
+      padding: const EdgeInsets.only(top: 16.0),
+      child: TextField(
+        decoration: InputDecoration(
+          border: const OutlineInputBorder(),
+          labelText: label,
+        ),
+        keyboardType: TextInputType.number,
+        onChanged: onChanged,
+      ),
+    );
+  }
+  Widget _buildEndgameButton(String label, EndgameState state, Color bgColor, double buttonHeight, double fontSize) {
+    return SizedBox(
+      height: buttonHeight,
+      child: ElevatedButton(
+        onPressed: () => _setEndgame(state),
+        style: ElevatedButton.styleFrom(
+          backgroundColor: bgColor,
+          foregroundColor: Colors.amber,
+          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
+          textStyle: TextStyle(fontSize: fontSize, fontWeight: FontWeight.bold),
+        ),
+        child: Text(label),
+      ),
+    );
+  }
 
-class Counter extends StatefulWidget {
-  // This class is the configuration for the state.
-  // It holds the values (in this case nothing) provided
-  // by the parent and used by the build  method of the
-  // State. Fields in a Widget subclass are always marked
-  // "final".
+  Widget _buildNavigationButton(String label, Widget page, double fontSize) {
+    return ElevatedButton(
+      style: ElevatedButton.styleFrom(
+        backgroundColor: Colors.amber,
+        foregroundColor: Colors.black,
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+        textStyle: TextStyle(fontSize: fontSize, fontWeight: FontWeight.bold),
+      ),
+      onPressed: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => page),
+        );
+      },
+      child: Text(label),
+    );
+  }
 
-  const Counter({super.key});
+  Widget _buildCounterColumn(String title, List<String> keys) {
+    return Column(
+      children: [
+        Text(title, style: const TextStyle(fontSize: 22, fontWeight: FontWeight.bold)),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: keys.map((key) =>
+              Expanded(child: _buildCounterButton(key))
+          ).toList(),
+        ),
+      ],
+    );
+  }
 
-  @override
-  State<Counter> createState() => _CounterState();
+  Widget _buildCounterButton(String key) {
+    return SizedBox(
+      height: 50,
+      child: ElevatedButton(
+        onLongPress: () => _updateCounter(key, false),
+        onPressed: () => _updateCounter(key, true),
+        style: ElevatedButton.styleFrom(
+          backgroundColor: Colors.black,
+          foregroundColor: Colors.amber,
+          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
+          textStyle: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+        ),
+        child: Text('$key: ${counters[key]}'),
+      ),
+    );
+  }
+
+  Widget _buildEndgameButtons(double buttonHeight, double fontSize) {
+    return Column(
+      children: [
+        const Padding(
+          padding: EdgeInsets.only(top: 16),
+          child: Text("Endgame", style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold)),
+        ),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: [
+            Expanded(child: _buildEndgameButton("Shallow", EndgameState.shallow, shallowColor, buttonHeight, fontSize)),
+            Expanded(child: _buildEndgameButton("Deep", EndgameState.deep, deepColor, buttonHeight, fontSize)),
+            Expanded(child: _buildEndgameButton("Park", EndgameState.park, parkColor, buttonHeight, fontSize)),
+          ],
+        ),
+      ],
+    );
+  }
 }

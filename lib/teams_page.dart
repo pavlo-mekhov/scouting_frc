@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:scouting_frc/DataManagement/Objects/team_info.dart';
 import 'package:scouting_frc/DataManagement/local_database.dart';
 import 'team_details_page.dart';
 

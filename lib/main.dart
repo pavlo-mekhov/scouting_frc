@@ -4,36 +4,39 @@ import 'package:provider/provider.dart';
 import 'package:scouting_frc/home_page.dart';
 
 import 'DataManagement/local_database.dart';
+import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 
-void main() async {
+Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  databaseFactory = databaseFactoryFfi;
   await LocalDatabase().database;
-  runApp(MyApp());
+
+  runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
   @override
-  Widget build(BuildContext context) { //window builder?
+  Widget build(BuildContext context) {
     return ChangeNotifierProvider(
       create: (context) => MyAppState(),
       child: MaterialApp(
         title: 'Scouting App',
         theme: ThemeData(
           useMaterial3: true,
-          colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple), 
-          scaffoldBackgroundColor: Colors.blueGrey
+          colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+          scaffoldBackgroundColor: Colors.blueGrey,
         ),
-
-        home: HomePage(),
+        home: const HomePage(),
       ),
     );
   }
 }
 
-class MyAppState extends ChangeNotifier { //main class with methods and variables
+class MyAppState extends ChangeNotifier {
   var current = WordPair.random();
+
   void getNext() {
     current = WordPair.random();
     notifyListeners();

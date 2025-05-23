@@ -19,8 +19,8 @@ class LocalDatabase {
   }
 
   Future<Database> _initDatabase() async {
-    sqfliteFfiInit();
-    databaseFactory = databaseFactoryFfi;
+    // sqfliteFfiInit();
+    // databaseFactory = databaseFactoryFfi;
 
     WidgetsFlutterBinding.ensureInitialized();
 

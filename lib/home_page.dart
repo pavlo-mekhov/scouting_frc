@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:scouting_frc/main.dart';
+import 'package:scouting_frc/pit_scouting_page.dart';
+
+import 'match_scouting_page.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
@@ -33,7 +35,7 @@ class HomePage extends StatelessWidget {
             child: ElevatedButton(onPressed: () {
               Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => Counter())
+                  MaterialPageRoute(builder: (context) => MatchScoutingPage())
               );
             }, child:
             Text('Match Scouting')
@@ -48,7 +50,7 @@ class HomePage extends StatelessWidget {
               onPressed: () {
                 Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => Counter())
+                    MaterialPageRoute(builder: (context) => PitScoutingPage())
                 );
               },
               clipBehavior: Clip.antiAlias,// <--add this
@@ -71,7 +73,7 @@ class HomePage extends StatelessWidget {
               onPressed: () {
                 Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => Counter())
+                    MaterialPageRoute(builder: (context) => MatchScoutingPage())
                   // MaterialPageRoute(builder: (context) => const CounterState()),
                 );
               },
@@ -95,7 +97,7 @@ class HomePage extends StatelessWidget {
               onPressed: () {
                 Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => Counter())
+                    MaterialPageRoute(builder: (context) => MatchScoutingPage())
                 );
               },
               clipBehavior: Clip.antiAlias,// <--add this
