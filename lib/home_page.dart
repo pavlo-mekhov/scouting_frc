@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:scouting_frc/DataManagement/Objects/team_info.dart';
 import 'package:scouting_frc/DataManagement/local_database.dart';
 import 'package:scouting_frc/match_scouting_page.dart';
+import 'package:scouting_frc/pit_scouting_page.dart';
 import 'package:scouting_frc/teams_page.dart';
 
 class HomePage extends StatelessWidget {
@@ -32,7 +33,7 @@ class HomePage extends StatelessWidget {
             const Spacer(),
             _buildButton(
               label: 'Match Scouting',
-              onPressed: () => _navigateTo(context, Counter()),
+              onPressed: () => _navigateTo(context, MatchScoutingPage()),
             ),
             const Spacer(),
             _buildButton(
@@ -42,7 +43,7 @@ class HomePage extends StatelessWidget {
             const Spacer(),
             _buildButton(
               label: 'Analytics',
-              onPressed: () => _navigateTo(context, Counter()),
+              onPressed: () => _navigateTo(context, PitScoutingPage()),
             ),
             const Spacer(),
             _buildButton(
